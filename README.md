@@ -1,101 +1,99 @@
-# 🍷 Wine Quality Prediction
+# Wine Quality Prediction
 
-> Prédiction de la qualité du vin avec Machine Learning — Application desktop interactive construite avec Random Forest et CustomTkinter.
+Prediction of wine quality using Machine Learning — interactive desktop application built with Random Forest and CustomTkinter.
 
+
+---
 
 ## Description
 
-Ce projet prédit la **qualité d'un vin** (score de 0 à 10) à partir de ses caractéristiques physico-chimiques, en utilisant un modèle **Random Forest Regressor** optimisé contre le surapprentissage.
+This project predicts the **quality of a wine** (score from 0 to 10) based on its physicochemical characteristics, using a **Random Forest Regressor** model optimized to reduce overfitting.
 
-L'application inclut une interface graphique complète permettant de :
-- saisir les paramètres d'un vin et obtenir une prédiction instantanée,
-- visualiser les performances du modèle,
-- explorer interactivement le dataset.
+The application provides a complete graphical interface to:
+- enter wine parameters and get an instant prediction,
+- visualize model performance,
+- interactively explore the dataset.
 
+---
 
+## Project Structure
 
-##  Aperçu
-
-| Formulaire de prédiction | Visualisations |
-|:---:|:---:|
-| Saisie des 12 paramètres physico-chimiques | Importance des variables, corrélations, résidus |
-
-
-##  Structure du projet
-
-
-projet_wine_quality/
+```
+wine-quality-prediction/
 │
-├── entrainement.py              # Script d'entraînement du modèle
-├── app.py                       # Application desktop (CustomTkinter)
-├── wine-quality-white-and-red.csv  # Dataset (vins blancs + rouges)
+├── entrainement.py                 # Model training script
+├── app.py                          # Desktop application (CustomTkinter)
+├── wine-quality-white-and-red.csv  # Dataset (red + white wines)
 │
-├── model.pkl                    # Modèle entraîné (généré)
-├── scaler.pkl                   # StandardScaler (généré)
-├── feature_names.pkl            # Noms des features (généré)
-├── model_metrics.json           # Métriques du modèle (généré)
-├── feature_importance.csv       # Importance des variables (généré)
-└── model_analysis.png           # Graphiques d'analyse (généré)
+├── model.pkl                       # Trained model (generated)
+├── scaler.pkl                      # StandardScaler (generated)
+├── feature_names.pkl               # Feature names (generated)
+├── model_metrics.json              # Model metrics (generated)
+├── feature_importance.csv          # Feature importances (generated)
+└── model_analysis.png              # Analysis charts (generated)
+```
 
+---
 
-##  Dataset
+## Dataset
 
-- **Source :** [UCI ML Repository – Wine Quality](https://archive.ics.uci.edu/ml/datasets/wine+quality)
-- **Taille :** 6 497 lignes × 13 colonnes
-- **Types :** Vins rouges + vins blancs fusionnés
-- **Variable cible :** `quality` (score entier de 3 à 9)
+- **Source:** [UCI ML Repository – Wine Quality](https://archive.ics.uci.edu/ml/datasets/wine+quality)
+- **Size:** 6,497 rows x 13 columns
+- **Content:** Red and white wines combined
+- **Target variable:** `quality` (integer score from 3 to 9)
 
-| Variable | Description | Exemple |
+| Variable | Description | Example |
 |---|---|---|
-| `fixed acidity` | Acidité fixe | 7.0 |
-| `volatile acidity` | Acidité volatile | 0.35 |
-| `citric acid` | Acide citrique | 0.30 |
-| `residual sugar` | Sucre résiduel | 3.0 |
-| `chlorides` | Chlorures | 0.08 |
-| `free sulfur dioxide` | SO₂ libre | 35 |
-| `total sulfur dioxide` | SO₂ total | 138 |
-| `density` | Densité | 0.996 |
+| `fixed acidity` | Fixed acidity | 7.0 |
+| `volatile acidity` | Volatile acidity | 0.35 |
+| `citric acid` | Citric acid | 0.30 |
+| `residual sugar` | Residual sugar | 3.0 |
+| `chlorides` | Chlorides | 0.08 |
+| `free sulfur dioxide` | Free SO2 | 35 |
+| `total sulfur dioxide` | Total SO2 | 138 |
+| `density` | Density | 0.996 |
 | `pH` | pH | 3.3 |
-| `sulphates` | Sulfates | 0.65 |
-| `alcohol` | Taux d'alcool (%) | 10.5 |
-| `type` | Type de vin (0=Blanc, 1=Rouge) | 0 |
+| `sulphates` | Sulphates | 0.65 |
+| `alcohol` | Alcohol (%) | 10.5 |
+| `type` | Wine type (0=White, 1=Red) | 0 |
 
+---
 
+## Model
 
-##  Modèle
+### Algorithm: Random Forest Regressor
 
-### Algorithme : Random Forest Regressor
-
-Hyperparamètres optimisés pour réduire le surapprentissage :
+Hyperparameters tuned to reduce overfitting:
 
 ```python
 RandomForestRegressor(
     n_estimators=100,
-    max_depth=10,          # Limite la profondeur des arbres
-    min_samples_split=10,  # Empêche la fragmentation excessive
-    min_samples_leaf=4,    # Feuilles avec minimum 4 échantillons
-    max_features='sqrt',   # Sélection aléatoire des features
+    max_depth=10,          # Limits tree depth
+    min_samples_split=10,  # Prevents excessive splitting
+    min_samples_leaf=4,    # Minimum 4 samples per leaf
+    max_features='sqrt',   # Random feature selection
     random_state=42
 )
+```
 
-### Résultats
+### Results
 
-| Métrique | Train | Test |
+| Metric | Train | Test |
 |---|---|---|
 | R² | 0.6004 | 0.4570 |
 | RMSE | 0.5563 | 0.6230 |
 | MAE | 0.4302 | 0.4916 |
 | MAPE | 7.71% | 8.69% |
 
-**Validation croisée 5-Fold :**
-- R² moyen : `0.4133 ± 0.0230`
-- RMSE moyen : `0.6739 ± 0.0168`
+**5-Fold Cross-Validation:**
+- Mean R²: `0.4133 ± 0.0230`
+- Mean RMSE: `0.6739 ± 0.0168`
 
-**Ratio de surapprentissage :** `0.1200` →  **Bonne généralisation**
+**Overfitting ratio:** `0.1200` — Good generalization
 
-### Top variables les plus impactantes
+### Most Influential Features
 
-| Variable | Importance |
+| Feature | Importance |
 |---|---|
 | alcohol | 0.2374 |
 | volatile acidity | 0.1253 |
@@ -103,77 +101,80 @@ RandomForestRegressor(
 | chlorides | 0.0810 |
 | free sulfur dioxide | 0.0742 |
 
+---
 
+## Installation
 
-##  Installation & Lancement
+### Requirements
 
-### Prérequis
+Python 3.8 or higher.
 
-```bash
-Python 3.8+
-```
-
-### 1. Cloner le dépôt
+### Clone the repository
 
 ```bash
-git clone https://github.com/ton-username/wine-quality-prediction.git
+git clone https://github.com/your-username/wine-quality-prediction.git
 cd wine-quality-prediction
 ```
 
-### 2. Installer les dépendances
+### Install dependencies
 
 ```bash
 pip install pandas numpy matplotlib seaborn scikit-learn customtkinter
 ```
 
-### 3. Entraîner le modèle
+### Train the model
 
 ```bash
 python entrainement.py
 ```
 
-> Génère automatiquement : `model.pkl`, `scaler.pkl`, `feature_names.pkl`, `model_metrics.json`, `feature_importance.csv`, `model_analysis.png`
+This generates: `model.pkl`, `scaler.pkl`, `feature_names.pkl`, `model_metrics.json`, `feature_importance.csv`, `model_analysis.png`.
 
-### 4. Lancer l'application
+### Launch the application
 
 ```bash
 python app.py
+```
 
+---
 
-## Fonctionnalités de l'application
+## Application Features
 
-| Fonctionnalité | Description |
+| Feature | Description |
 |---|---|
-|  **Prédiction** | Saisie des 12 paramètres → score prédit avec intervalle de confiance |
-|  **Visualisations** | Importance des variables, corrélations, performance Train/Test, résidus, distribution |
-|  **Explorateur de données** | Affichage interactif du dataset (début, fin, échantillon aléatoire) |
-| ↻ **Reset** | Réinitialisation rapide des champs avec les valeurs par défaut |
+| Prediction | Enter the 12 parameters and get a predicted score with confidence interval |
+| Visualizations | Feature importance, correlations, Train/Test performance, residuals, distribution |
+| Data Explorer | Interactive display of the dataset (first rows, last rows, random sample) |
+| Reset | Reset all fields to default values |
 
-### Interprétation des scores
+### Score Interpretation
 
-| Score | Statut |
+| Score | Label |
 |---|---|
-| ≥ 7 |  **EXCELLENT** |
-| ≥ 6 |  **BON** |
-| ≥ 5 |  **ACCEPTABLE** |
-| < 5 |  **FAIBLE** |
+| >= 7 | Excellent |
+| >= 6 | Good |
+| >= 5 | Acceptable |
+| < 5 | Poor |
 
+---
 
+## Stack
 
-## Technologies utilisées
+- **Python** — core language
+- **scikit-learn** — Random Forest, StandardScaler, metrics, cross-validation
+- **Pandas / NumPy** — data manipulation and preprocessing
+- **Matplotlib** — charts embedded in the interface
+- **CustomTkinter** — modern dark-theme GUI
 
-- **Python** — langage principal
-- **scikit-learn** — Random Forest, StandardScaler, métriques, validation croisée
-- **Pandas / NumPy** — manipulation et préparation des données
-- **Matplotlib** — visualisations intégrées dans l'interface
-- **CustomTkinter** — interface graphique moderne (thème dark)
+---
 
+## Author
 
-##  Auteur
+**Bosco** — L3 AI & Big Data student  
+Grand Ecole de l'Innovation Technologique (GE-IT) — Antananarivo, Madagascar
 
-**Bosco** — Étudiant en L3 IA & Big Data  
-Grand École de l'Innovation Technologique (GE-IT) — Antananarivo, Madagascar
+---
 
+## License
 
-
-.
+This project is licensed under the [MIT License](LICENSE).
